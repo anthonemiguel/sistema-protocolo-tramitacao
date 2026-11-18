@@ -53,7 +53,7 @@ Dados de demonstração: 4 a 5 setores, 8 a 10 interessados, 15 a 20 documentos 
 
 ## Pilha e arquitetura
 
-Python + Flask; MySQL com PyMySQL; Bootstrap via CDN; pytest; Git e GitHub (público); PythonAnywhere (gratuito). Só bibliotecas necessárias, todas em `requirements.txt`.
+Python + Flask; MySQL com PyMySQL; Bootstrap via CDN; pytest; Git e GitHub (público). Hospedagem: Render (aplicação) e Aiven (MySQL), gratuitos; o PythonAnywhere gratuito deixou de oferecer MySQL e bloqueia banco externo. Só bibliotecas necessárias, todas em `requirements.txt`.
 
 MVC visível: `app/models` (banco e regras), `app/controllers` (rotas), `app/templates` (views), `app/static`; `database/schema.sql`, `database/seed.sql`; `tests/`; `docs/`; `README.md`. Rodar localmente com poucos comandos documentados no README; testes finais contra MySQL antes de publicar.
 
@@ -105,6 +105,6 @@ Diagramas por código, exportados como imagem, coerentes entre si e com `schema.
 
 ## Alertas a fazer no momento certo
 
-- Validade da aplicação no plano gratuito do PythonAnywhere e como renovar (fase 6).
+- Validade dos planos gratuitos do Render e do Aiven e como reativar (fase 6).
 - Conferir se a instituição exige declaração de uso de IA (fase 10).
 - Reservar tempo para o aluno entender código e regras de negócio (fase 3 em diante).

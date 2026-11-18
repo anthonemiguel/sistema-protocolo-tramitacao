@@ -1,6 +1,8 @@
 """Recria o banco e carrega os dados de demonstração (todos fictícios).
 
-Uso: python database/seed.py
+Uso: python database/seed.py            (apaga e recria tudo)
+     python database/seed.py --se-vazio (só carrega se o banco ainda não tiver tabelas;
+                                         usado na publicação para não apagar dados de teste)
 
 Lê a conexão do arquivo .env. As senhas dos usuários de demonstração vêm das
 variáveis SENHA_AVALIADOR e SENHA_TESTADOR, para não ficarem gravadas no
@@ -83,6 +85,13 @@ def main():
         sys.exit("Defina SENHA_AVALIADOR e SENHA_TESTADOR no arquivo .env antes de rodar o seed.")
 
     db = conectar(config_do_ambiente())
+    if "--se-vazio" in sys.argv:
+        with db.cursor() as cur:
+            cur.execute("SHOW TABLES LIKE 'documento'")
+            if cur.fetchone():
+                print("Banco já carregado; nada foi alterado.")
+                db.close()
+                return
     executar_schema(db)
 
     ids_setor = {}

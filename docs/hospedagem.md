@@ -1,114 +1,57 @@
-# Publicação no PythonAnywhere (plano gratuito)
+# Publicação gratuita: Render (aplicação) e Aiven (banco MySQL)
 
-Nos comandos abaixo, troque `SEU_USUARIO` pelo seu nome de usuário do PythonAnywhere. O endereço final será `https://SEU_USUARIO.pythonanywhere.com`.
+O plano gratuito do PythonAnywhere não oferece mais MySQL e bloqueia conexão com bancos externos. Por isso a aplicação roda no Render e o banco MySQL no Aiven, ambos gratuitos. As senhas ficam só nesses dois serviços, nunca no GitHub.
 
-## Item 1. Conta
+## Item 1. Banco MySQL no Aiven
 
-1. Crie a conta em https://www.pythonanywhere.com/registration/register/beginner/ (plano *Beginner*, gratuito).
-2. Confirme o e-mail.
+1. Acesse https://console.aiven.io/signup e crie a conta (pode entrar com o Google).
+2. Se pedir para criar um projeto, aceite o nome sugerido.
+3. Clique em **Create service**, escolha **MySQL**.
+4. Em *Service tier*, escolha **Free**. Mantenha a região sugerida e clique em **Create free service**.
+5. Espere a situação mudar de *Rebuilding* para **Running** (de 3 a 5 minutos).
+6. Na página do serviço (*Overview*), em **Connection information**, deixe aberta esta aba. Você vai copiar daqui: **Host**, **Port**, **User**, **Password** (clique no ícone do olho) e **Database name** (normalmente `defaultdb`).
+7. Na mesma área, em **CA certificate**, clique em **Download**. Abra o arquivo `ca.pem` baixado com o Bloco de Notas; o conteúdo será colado no item 2.
 
-## Item 2. Banco MySQL
+## Item 2. Aplicação no Render
 
-1. No menu superior, abra **Databases**.
-2. Em *MySQL password*, defina uma senha para o banco e clique em **Set MySQL password**. Anote essa senha; ela vai para o `.env` no item 4.
-3. Em *Create a database*, digite `protocolo` e clique em **Create**. O banco criado se chama `SEU_USUARIO$protocolo`.
-4. Anote o *Database host address* mostrado na página (algo como `SEU_USUARIO.mysql.pythonanywhere-services.com`).
+1. Acesse https://dashboard.render.com/register e entre com a conta do GitHub (**GitHub**).
+2. Clique em **New** e depois em **Web Service**.
+3. Escolha **Git Provider**, autorize o Render no GitHub e selecione o repositório `sistema-protocolo-tramitacao`.
+4. Preencha:
+   - **Name**: `protocolo-vila-serena` (vira parte do endereço);
+   - **Language**: `Python 3`;
+   - **Branch**: `main`;
+   - **Build Command**: `pip install -r requirements.txt && python database/seed.py --se-vazio`
+   - **Start Command**: `gunicorn wsgi:app`
+   - **Instance Type**: **Free**.
+5. Em **Environment Variables**, clique em **Add Environment Variable** para cada linha abaixo:
 
-## Item 3. Código e bibliotecas
+| Nome | Valor |
+|---|---|
+| DB_HOST | Host do Aiven |
+| DB_PORT | Port do Aiven |
+| DB_USER | User do Aiven (normalmente `avnadmin`) |
+| DB_PASSWORD | Password do Aiven |
+| DB_NAME | Database name do Aiven (normalmente `defaultdb`) |
+| DB_SSL_CA | `/etc/secrets/ca.pem` |
+| SECRET_KEY | clique em **Generate** |
+| SENHA_AVALIADOR | senha que você escolher para o avaliador |
+| SENHA_TESTADOR | senha que você escolher para os testadores |
 
-1. No menu superior, abra **Consoles** e clique em **Bash**.
-2. No console, rode um comando por vez:
+6. Ainda nessa área, em **Secret Files**, clique em **Add Secret File**: em *Filename* digite `ca.pem`; em *Contents* cole todo o texto do `ca.pem` aberto no Bloco de Notas (incluindo as linhas `-----BEGIN CERTIFICATE-----` e `-----END CERTIFICATE-----`).
+7. Clique em **Deploy Web Service**.
+8. Acompanhe o log. Durante a construção deve aparecer `Banco recriado: 5 setores, 9 interessados, 18 documentos.` No fim aparece `Your service is live`.
+9. O endereço fica no alto da página, no formato `https://protocolo-vila-serena.onrender.com`. Abra e entre com `avaliador` e a senha escolhida.
 
-```bash
-git clone https://github.com/anthonemiguel/sistema-protocolo-tramitacao.git
-```
+Se a publicação falhar, copie as últimas 20 linhas do log e envie.
 
-```bash
-cd sistema-protocolo-tramitacao
-```
+## Item 3. Atualizar depois de uma correção
 
-```bash
-mkvirtualenv --python=/usr/bin/python3.11 protocolo
-```
+Cada envio ao GitHub na branch `main` dispara uma nova publicação automática. A carga de dados não se repete: o comando `seed.py --se-vazio` só carrega quando o banco está vazio, então os registros feitos pelos testadores são mantidos.
 
-```bash
-pip install -r requirements.txt
-```
+Para recriar os dados de demonstração do zero (apaga tudo), troque temporariamente o Build Command para `pip install -r requirements.txt && python database/seed.py` e clique em **Manual Deploy**. Depois volte o comando ao original.
 
-## Item 4. Arquivo `.env` (senhas ficam só no servidor)
+## Item 4. Limitações do plano gratuito
 
-Ainda no console Bash, dentro da pasta `sistema-protocolo-tramitacao`:
-
-```bash
-cp .env.exemplo .env
-```
-
-```bash
-nano .env
-```
-
-Preencha assim (os valores entre `<>` são seus):
-
-```
-DB_HOST=SEU_USUARIO.mysql.pythonanywhere-services.com
-DB_PORT=3306
-DB_USER=SEU_USUARIO
-DB_PASSWORD=<senha do MySQL definida no item 2>
-DB_NAME=SEU_USUARIO$protocolo
-TEST_DB_NAME=SEU_USUARIO$protocolo_teste
-SECRET_KEY=<um texto longo qualquer, por exemplo 40 letras e números misturados>
-SENHA_AVALIADOR=<senha que será entregue ao avaliador>
-SENHA_TESTADOR=<senha que será entregue aos testadores>
-```
-
-Para salvar no `nano`: Ctrl+O, Enter, Ctrl+X.
-
-## Item 5. Carga dos dados de demonstração
-
-```bash
-python database/seed.py
-```
-
-A mensagem esperada é `Banco recriado: 5 setores, 9 interessados, 18 documentos.`
-
-Atenção: este comando apaga e recria o banco. Depois que os testadores começarem, não rode de novo.
-
-## Item 6. Aplicação web
-
-1. No menu superior, abra **Web** e clique em **Add a new web app**.
-2. Clique em **Next**, escolha **Manual configuration** (não escolha "Flask") e depois **Python 3.11**. Clique em **Next** até terminar.
-3. Na seção **Virtualenv**, clique no campo e digite `protocolo`. Confirme.
-4. Na seção **Code**, clique no link do *WSGI configuration file* (`/var/www/SEU_USUARIO_pythonanywhere_com_wsgi.py`). Apague todo o conteúdo e cole:
-
-```python
-import sys
-
-caminho = "/home/SEU_USUARIO/sistema-protocolo-tramitacao"
-if caminho not in sys.path:
-    sys.path.insert(0, caminho)
-
-from dotenv import load_dotenv
-load_dotenv(caminho + "/.env")
-
-from wsgi import app as application
-```
-
-5. Clique em **Save** e volte à aba **Web**.
-6. Na seção **Static files**, adicione: URL `/static/` e Directory `/home/SEU_USUARIO/sistema-protocolo-tramitacao/app/static`.
-7. Em **Security**, ative **Force HTTPS**.
-8. Clique no botão verde **Reload SEU_USUARIO.pythonanywhere.com**.
-9. Abra `https://SEU_USUARIO.pythonanywhere.com` e entre com `avaliador` e a senha escolhida.
-
-Se aparecer erro, a aba **Web** tem o link **Error log**; copie as últimas linhas e me envie.
-
-## Item 7. Atualizar depois de uma correção
-
-```bash
-cd ~/sistema-protocolo-tramitacao && git pull
-```
-
-Depois, na aba **Web**, clique em **Reload**.
-
-## Item 8. Validade no plano gratuito
-
-No plano gratuito, a aplicação fica no ar por três meses. Para renovar, entre na aba **Web** e clique em **Run until 3 months from today**. O PythonAnywhere avisa por e-mail antes de desligar. Confira a data mostrada nessa aba antes da correção do trabalho.
+- O Render desliga a aplicação após 15 minutos sem acesso. O próximo acesso leva cerca de um minuto para carregar; depois disso fica normal. Esse aviso consta no kit do testador.
+- O Aiven pode desligar serviços gratuitos parados por muito tempo, e avisa por e-mail antes. Antes da data da correção, abra o sistema uma vez e confira, no painel do Aiven, se o serviço está **Running**. Se estiver desligado, clique em **Power on**.
