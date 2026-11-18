@@ -8,7 +8,7 @@ Uma prefeitura recebe pedidos e ofícios de cidadãos e empresas. O sistema regi
 
 ## Como acessar
 
-- Endereço: https://protocolo-vila-serena.onrender.com
+- Endereço: https://sistema-protocolo-tramitacao.onrender.com
 - Usuário: `testador`
 - Senha: [enviada junto com o convite]
 

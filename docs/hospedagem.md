@@ -18,7 +18,7 @@ O plano gratuito do PythonAnywhere não oferece mais MySQL e bloqueia conexão c
 2. Clique em **New** e depois em **Web Service**.
 3. Escolha **Git Provider**, autorize o Render no GitHub e selecione o repositório `sistema-protocolo-tramitacao`.
 4. Preencha:
-   - **Name**: `protocolo-vila-serena` (vira parte do endereço);
+   - **Name**: `sistema-protocolo-tramitacao` (vira parte do endereço);
    - **Language**: `Python 3`;
    - **Branch**: `main`;
    - **Build Command**: `pip install -r requirements.txt && python database/seed.py --se-vazio`
@@ -41,7 +41,7 @@ O plano gratuito do PythonAnywhere não oferece mais MySQL e bloqueia conexão c
 6. Ainda nessa área, em **Secret Files**, clique em **Add Secret File**: em *Filename* digite `ca.pem`; em *Contents* cole todo o texto do `ca.pem` aberto no Bloco de Notas (incluindo as linhas `-----BEGIN CERTIFICATE-----` e `-----END CERTIFICATE-----`).
 7. Clique em **Deploy Web Service**.
 8. Acompanhe o log. Durante a construção deve aparecer `Banco recriado: 5 setores, 9 interessados, 18 documentos.` No fim aparece `Your service is live`.
-9. O endereço fica no alto da página, no formato `https://protocolo-vila-serena.onrender.com`. Abra e entre com `avaliador` e a senha escolhida.
+9. O endereço fica no alto da página, no formato `https://sistema-protocolo-tramitacao.onrender.com`. Abra e entre com `avaliador` e a senha escolhida.
 
 Se a publicação falhar, copie as últimas 20 linhas do log e envie.
 
