@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<h1 class="h4 mb-3">{{ titulo }}</h1>
+<form method="post" class="card card-body shadow-sm" style="max-width: 640px">
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome ou razão social</label>
+    <input type="text" class="form-control" id="nome" name="nome" maxlength="120" required value="{{ interessado.get('nome', '') }}">
+  </div>
+  <div class="mb-3">
+    <label for="cpf_cnpj" class="form-label">CPF ou CNPJ</label>
+    <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" maxlength="18" required
+           value="{{ (interessado.get('cpf_cnpj') or '')|cpf_cnpj }}">
+    <div class="form-text">Pode digitar com ou sem pontos e traços.</div>
+  </div>
+  <div class="mb-3">
+    <label for="telefone" class="form-label">Telefone</label>
+    <input type="text" class="form-control" id="telefone" name="telefone" maxlength="20" value="{{ interessado.get('telefone') or '' }}">
+  </div>
+  <div class="mb-3">
+    <label for="email" class="form-label">E-mail</label>
+    <input type="email" class="form-control" id="email" name="email" maxlength="120" value="{{ interessado.get('email') or '' }}">
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('interessados.lista') }}" class="btn btn-link">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

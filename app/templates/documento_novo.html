@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titulo %}Protocolar documento{% endblock %}
+{% block conteudo %}
+<h1 class="h4 mb-3">Protocolar documento</h1>
+<p class="text-muted">O número de protocolo é gerado automaticamente e o documento entra no setor de protocolo.</p>
+<form method="post" class="card card-body shadow-sm" style="max-width: 720px">
+  <div class="mb-3">
+    <label for="id_interessado" class="form-label">Interessado</label>
+    <select class="form-select" id="id_interessado" name="id_interessado" required>
+      <option value="">Escolha...</option>
+      {% for i in interessados %}
+      <option value="{{ i.id_interessado }}" {% if form.get('id_interessado') == i.id_interessado|string %}selected{% endif %}>
+        {{ i.nome }} ({{ i.cpf_cnpj|cpf_cnpj }})
+      </option>
+      {% endfor %}
+    </select>
+    {% if g.usuario.perfil == 'administrador' %}
+    <div class="form-text">Interessado não está na lista? <a href="{{ url_for('interessados.novo') }}">Cadastre-o primeiro</a>.</div>
+    {% endif %}
+  </div>
+  <div class="mb-3">
+    <label for="tipo" class="form-label">Tipo</label>
+    <select class="form-select" id="tipo" name="tipo" required>
+      <option value="">Escolha...</option>
+      {% for t in tipos %}
+      <option {% if form.get('tipo') == t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="assunto" class="form-label">Assunto</label>
+    <input type="text" class="form-control" id="assunto" name="assunto" maxlength="200" required value="{{ form.get('assunto', '') }}">
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary">Protocolar</button>
+    <a href="{{ url_for('painel.inicio') }}" class="btn btn-link">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

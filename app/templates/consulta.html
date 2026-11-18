@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}Consulta{% endblock %}
+{% block conteudo %}
+<h1 class="h4 mb-3">Consulta de documentos</h1>
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <label for="numero" class="form-label">Número de protocolo</label>
+    <input type="text" class="form-control" id="numero" name="numero" placeholder="Ex.: 2026/00001" value="{{ numero }}">
+  </div>
+  <div class="col-md-5">
+    <label for="interessado" class="form-label">Ou interessado (nome, CPF ou CNPJ)</label>
+    <input type="text" class="form-control" id="interessado" name="interessado" value="{{ interessado }}">
+  </div>
+  <div class="col-md-3 d-flex align-items-end">
+    <button type="submit" class="btn btn-primary w-100">Consultar</button>
+  </div>
+</form>
+{% if pesquisou %}
+  {% if resultados %}
+    <p class="text-muted">{{ resultados|length }} documento(s) encontrado(s).</p>
+    {% with documentos = resultados %}{% include "_tabela_documentos.html" %}{% endwith %}
+  {% else %}
+    <div class="alert alert-warning">Nenhum documento encontrado.</div>
+  {% endif %}
+{% else %}
+  <p class="text-muted">Preencha um dos campos e clique em Consultar.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead class="table-light">
+    <tr><th>Protocolo</th><th>Tipo</th><th>Assunto</th><th>Interessado</th><th>Data</th><th>Setor atual</th><th>Situação</th></tr>
+  </thead>
+  <tbody>
+  {% for d in documentos %}
+    <tr>
+      <td><a href="{{ url_for('documentos.detalhe', id_documento=d.id_documento) }}">{{ d.numero_protocolo }}</a></td>
+      <td>{{ d.tipo }}</td>
+      <td>{{ d.assunto }}</td>
+      <td>{{ d.interessado_nome }}</td>
+      <td>{{ d.data_protocolo|data }}</td>
+      <td>{{ d.setor_sigla }}</td>
+      <td>{% include "_situacao.html" %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>

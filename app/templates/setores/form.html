@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<h1 class="h4 mb-3">{{ titulo }}</h1>
+<form method="post" class="card card-body shadow-sm" style="max-width: 560px">
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome</label>
+    <input type="text" class="form-control" id="nome" name="nome" maxlength="80" required value="{{ setor.get('nome', '') }}">
+  </div>
+  <div class="mb-3">
+    <label for="sigla" class="form-label">Sigla</label>
+    <input type="text" class="form-control" id="sigla" name="sigla" maxlength="10" required value="{{ setor.get('sigla', '') }}">
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('setores.lista') }}" class="btn btn-link">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

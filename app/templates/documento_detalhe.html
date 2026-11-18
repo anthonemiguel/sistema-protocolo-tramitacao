@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block titulo %}Documento {{ documento.numero_protocolo }}{% endblock %}
+{% block conteudo %}
+{% set d = documento %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 mb-0">Documento {{ d.numero_protocolo }}</h1>
+  {% include "_situacao.html" %}
+</div>
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Tipo</dt><dd class="col-sm-9">{{ d.tipo }}</dd>
+      <dt class="col-sm-3">Assunto</dt><dd class="col-sm-9">{{ d.assunto }}</dd>
+      <dt class="col-sm-3">Interessado</dt><dd class="col-sm-9">{{ d.interessado_nome }} ({{ d.cpf_cnpj|cpf_cnpj }})</dd>
+      <dt class="col-sm-3">Data do protocolo</dt><dd class="col-sm-9">{{ d.data_protocolo|data_hora }}</dd>
+      <dt class="col-sm-3">Setor atual</dt><dd class="col-sm-9">{{ d.setor_nome }} ({{ d.setor_sigla }})</dd>
+      {% if d.data_arquivamento %}
+      <dt class="col-sm-3">Arquivado em</dt><dd class="col-sm-9">{{ d.data_arquivamento|data_hora }}</dd>
+      {% endif %}
+    </dl>
+  </div>
+</div>
+
+{% if pode_agir %}
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <form method="post" action="{{ url_for('documentos.tramitar', id_documento=d.id_documento) }}" class="card card-body shadow-sm">
+      <h2 class="h6">Tramitar para outro setor</h2>
+      <div class="mb-2">
+        <label for="id_setor_destino" class="form-label">Setor de destino</label>
+        <select class="form-select" id="id_setor_destino" name="id_setor_destino" required>
+          <option value="">Escolha...</option>
+          {% for s in setores %}<option value="{{ s.id_setor }}">{{ s.nome }} ({{ s.sigla }})</option>{% endfor %}
+        </select>
+      </div>
+      <div class="mb-2">
+        <label for="despacho" class="form-label">Despacho</label>
+        <textarea class="form-control" id="despacho" name="despacho" rows="2" maxlength="500" required></textarea>
+      </div>
+      <div><button type="submit" class="btn btn-primary">Tramitar</button></div>
+    </form>
+  </div>
+  <div class="col-lg-4">
+    <form method="post" action="{{ url_for('documentos.arquivar', id_documento=d.id_documento) }}" class="card card-body shadow-sm h-100"
+          data-confirmar="Arquivar o documento {{ d.numero_protocolo }}? Depois de arquivado, ele não poderá ser tramitado.">
+      <h2 class="h6">Arquivar</h2>
+      <p class="small text-muted">Encerra a tramitação do documento.</p>
+      <div class="mt-auto"><button type="submit" class="btn btn-outline-secondary">Arquivar documento</button></div>
+    </form>
+  </div>
+</div>
+{% elif d.situacao == 'Arquivado' %}
+<div class="alert alert-secondary">Documento arquivado. Não pode mais ser tramitado.</div>
+{% else %}
+<div class="alert alert-light border">Este documento está em {{ d.setor_sigla }}. Só esse setor pode tramitá-lo ou arquivá-lo.</div>
+{% endif %}
+
+<h2 class="h5">Histórico de tramitação</h2>
+<div class="table-responsive">
+<table class="table table-sm table-striped align-middle">
+  <thead class="table-light"><tr><th>Data e hora</th><th>Origem</th><th>Destino</th><th>Despacho</th><th>Responsável</th></tr></thead>
+  <tbody>
+  {% for t in historico %}
+    <tr>
+      <td>{{ t.data_hora|data_hora }}</td>
+      <td>{{ t.origem_sigla or 'Entrada' }}</td>
+      <td>{{ t.destino_sigla }}</td>
+      <td>{{ t.despacho }}</td>
+      <td>{{ t.usuario_nome }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<a href="{{ url_for('painel.inicio') }}">Voltar ao painel</a>
+{% endblock %}
