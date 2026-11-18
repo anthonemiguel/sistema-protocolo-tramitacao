@@ -29,3 +29,6 @@ testes/respostas/*
 # Arquivos temporários do Word
 ~$*.docx
 ca.pem
+
+# Documento de entrega (contém a senha do avaliador)
+entrega/*.docx
