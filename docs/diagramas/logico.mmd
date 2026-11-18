@@ -1,0 +1,51 @@
+erDiagram
+    SETOR ||--o{ USUARIO : "lota"
+    SETOR ||--o{ DOCUMENTO : "setor atual"
+    INTERESSADO ||--o{ DOCUMENTO : "apresenta"
+    DOCUMENTO ||--|{ TRAMITACAO : "possui"
+    SETOR |o--o{ TRAMITACAO : "origem"
+    SETOR ||--o{ TRAMITACAO : "destino"
+    USUARIO ||--o{ TRAMITACAO : "registra"
+    SETOR {
+        INT id_setor PK
+        VARCHAR nome UK
+        VARCHAR sigla UK
+        TINYINT eh_protocolo
+    }
+    USUARIO {
+        INT id_usuario PK
+        VARCHAR nome
+        VARCHAR login UK
+        VARCHAR senha_hash
+        VARCHAR perfil
+        INT id_setor FK
+    }
+    INTERESSADO {
+        INT id_interessado PK
+        VARCHAR nome
+        VARCHAR cpf_cnpj UK
+        VARCHAR telefone
+        VARCHAR email
+    }
+    DOCUMENTO {
+        INT id_documento PK
+        CHAR numero_protocolo UK
+        SMALLINT ano
+        INT sequencial
+        VARCHAR tipo
+        VARCHAR assunto
+        DATETIME data_protocolo
+        VARCHAR situacao
+        DATETIME data_arquivamento
+        INT id_interessado FK
+        INT id_setor_atual FK
+    }
+    TRAMITACAO {
+        INT id_tramitacao PK
+        INT id_documento FK
+        INT id_setor_origem FK
+        INT id_setor_destino FK
+        DATETIME data_hora
+        VARCHAR despacho
+        INT id_usuario FK
+    }

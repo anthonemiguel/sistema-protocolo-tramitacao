@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0 -- /tmp/claude-0/-home-user/0aed2e6d-ee33-5070-987a-3ede5668f318/scratchpad/venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/user
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 10 items
+
+tests/test_regras.py::test_regra1_numero_no_formato_ano_sequencial PASSED [ 10%]
+tests/test_regras.py::test_regra1_sequencial_reinicia_a_cada_ano PASSED  [ 20%]
+tests/test_regras.py::test_regra2_protocolo_cria_primeira_tramitacao PASSED [ 30%]
+tests/test_regras.py::test_regra3_so_o_setor_atual_pode_tramitar PASSED  [ 40%]
+tests/test_regras.py::test_regra4_destino_diferente_da_origem PASSED     [ 50%]
+tests/test_regras.py::test_regra5_documento_arquivado_nao_tramita PASSED [ 60%]
+tests/test_regras.py::test_regra6_historico_sem_edicao_nem_exclusao PASSED [ 70%]
+tests/test_regras.py::test_regra7_cpf_cnpj_validado_e_unico PASSED       [ 80%]
+tests/test_regras.py::test_tela_tramitar_arquivado_mostra_mensagem_de_bloqueio PASSED [ 90%]
+tests/test_regras.py::test_painel_exige_login PASSED                     [100%]
+
+============================== 10 passed in 2.54s ==============================

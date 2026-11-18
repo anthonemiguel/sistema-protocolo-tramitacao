@@ -1,0 +1,61 @@
+classDiagram
+    direction LR
+    class Setor {
+        +int id_setor
+        +str nome
+        +str sigla
+        +bool eh_protocolo
+        +listar()
+        +incluir(nome, sigla)
+        +alterar(id, nome, sigla)
+        +excluir(id)
+        +setor_de_protocolo()
+    }
+    class Usuario {
+        +int id_usuario
+        +str nome
+        +str login
+        +str senha_hash
+        +str perfil
+        +autenticar(login, senha)
+    }
+    class Interessado {
+        +int id_interessado
+        +str nome
+        +str cpf_cnpj
+        +str telefone
+        +str email
+        +validar_cpf_cnpj(valor)
+        +incluir(...)
+        +alterar(...)
+        +excluir(id)
+    }
+    class Documento {
+        +int id_documento
+        +str numero_protocolo
+        +int ano
+        +int sequencial
+        +str tipo
+        +str assunto
+        +datetime data_protocolo
+        +str situacao
+        +datetime data_arquivamento
+        +protocolar(tipo, assunto, interessado, usuario)
+        +tramitar(destino, despacho, usuario)
+        +arquivar(usuario)
+        +consultar(numero, interessado)
+    }
+    class Tramitacao {
+        +int id_tramitacao
+        +datetime data_hora
+        +str despacho
+        +registrar(...)
+        +historico(id_documento)
+    }
+    Setor "1" -- "0..*" Usuario : lota
+    Interessado "1" -- "0..*" Documento : apresenta
+    Setor "1" -- "0..*" Documento : guarda atualmente
+    Documento "1" *-- "1..*" Tramitacao : histórico
+    Setor "0..1" -- "0..*" Tramitacao : origem
+    Setor "1" -- "0..*" Tramitacao : destino
+    Usuario "1" -- "0..*" Tramitacao : responsável

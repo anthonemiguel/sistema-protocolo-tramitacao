@@ -1,0 +1,34 @@
+graph Chen {
+    graph [layout=neato, overlap=false, splines=true, sep="+12", fontname="Helvetica"];
+    node [fontname="Helvetica", fontsize=11];
+    edge [fontname="Helvetica", fontsize=10];
+
+    node [shape=box, style=filled, fillcolor="#dbe9f6"];
+    SETOR; USUARIO; INTERESSADO; DOCUMENTO; TRAMITACAO;
+
+    node [shape=diamond, style=filled, fillcolor="#fde9c9"];
+    lota [label="lota"]; apresenta [label="apresenta"]; esta_em [label="está em"];
+    possui [label="possui"]; origem [label="origem"]; destino [label="destino"]; registra [label="registra"];
+
+    node [shape=ellipse, style=solid];
+    s_id [label=<<u>id_setor</u>>]; s_nome [label="nome"]; s_sigla [label="sigla"]; s_prot [label="eh_protocolo"];
+    u_id [label=<<u>id_usuario</u>>]; u_nome [label="nome"]; u_login [label="login"]; u_senha [label="senha_hash"]; u_perfil [label="perfil"];
+    i_id [label=<<u>id_interessado</u>>]; i_nome [label="nome"]; i_doc [label="cpf_cnpj"]; i_tel [label="telefone"]; i_mail [label="email"];
+    d_id [label=<<u>id_documento</u>>]; d_num [label="numero_protocolo"]; d_tipo [label="tipo"]; d_ass [label="assunto"];
+    d_data [label="data_protocolo"]; d_sit [label="situacao"]; d_arq [label="data_arquivamento"];
+    t_id [label=<<u>id_tramitacao</u>>]; t_data [label="data_hora"]; t_desp [label="despacho"];
+
+    SETOR -- s_id; SETOR -- s_nome; SETOR -- s_sigla; SETOR -- s_prot;
+    USUARIO -- u_id; USUARIO -- u_nome; USUARIO -- u_login; USUARIO -- u_senha; USUARIO -- u_perfil;
+    INTERESSADO -- i_id; INTERESSADO -- i_nome; INTERESSADO -- i_doc; INTERESSADO -- i_tel; INTERESSADO -- i_mail;
+    DOCUMENTO -- d_id; DOCUMENTO -- d_num; DOCUMENTO -- d_tipo; DOCUMENTO -- d_ass; DOCUMENTO -- d_data; DOCUMENTO -- d_sit; DOCUMENTO -- d_arq;
+    TRAMITACAO -- t_id; TRAMITACAO -- t_data; TRAMITACAO -- t_desp;
+
+    SETOR -- lota [label="1"]; lota -- USUARIO [label="N"];
+    INTERESSADO -- apresenta [label="1"]; apresenta -- DOCUMENTO [label="N"];
+    SETOR -- esta_em [label="1"]; esta_em -- DOCUMENTO [label="N"];
+    DOCUMENTO -- possui [label="1"]; possui -- TRAMITACAO [label="N"];
+    SETOR -- origem [label="0..1"]; origem -- TRAMITACAO [label="N"];
+    SETOR -- destino [label="1"]; destino -- TRAMITACAO [label="N"];
+    USUARIO -- registra [label="1"]; registra -- TRAMITACAO [label="N"];
+}

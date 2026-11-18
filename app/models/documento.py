@@ -1,4 +1,6 @@
+import os
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pymysql
 
@@ -17,6 +19,12 @@ _SELECT = (
     "JOIN interessado i ON i.id_interessado = d.id_interessado "
     "JOIN setor s ON s.id_setor = d.id_setor_atual "
 )
+
+
+def agora():
+    """Data e hora local do órgão. O servidor e o banco na nuvem usam UTC."""
+    fuso = ZoneInfo(os.environ.get("FUSO_HORARIO", "America/Manaus"))
+    return datetime.now(fuso).replace(tzinfo=None, microsecond=0)
 
 
 def formatar_numero(ano, sequencial):
@@ -51,7 +59,7 @@ def protocolar(db, tipo, assunto, id_interessado, usuario, data_hora=None):
     if setor_protocolo is None:
         raise RegraNegocioError("Não há setor de protocolo cadastrado.")
 
-    data_hora = data_hora or datetime.now().replace(microsecond=0)
+    data_hora = data_hora or agora()
     ano = data_hora.year
     try:
         with db.cursor() as cur:
@@ -140,6 +148,7 @@ def tramitar(db, id_documento, id_setor_destino, despacho, usuario, data_hora=No
         raise RegraNegocioError("Escreva o despacho (motivo do envio).")
     if len(despacho) > 500:
         raise RegraNegocioError("O despacho pode ter no máximo 500 caracteres.")
+    data_hora = data_hora or agora()
     try:
         with db.cursor() as cur:
             tramitacao_model.registrar(
@@ -158,7 +167,7 @@ def arquivar(db, id_documento, usuario, data_hora=None):
     if documento is not None and documento["situacao"] == ARQUIVADO:
         raise RegraNegocioError("Este documento já está arquivado.")
     _verificar_setor_atual(documento, usuario)
-    data_hora = data_hora or datetime.now().replace(microsecond=0)
+    data_hora = data_hora or agora()
     with db.cursor() as cur:
         cur.execute(
             "UPDATE documento SET situacao = %s, data_arquivamento = %s WHERE id_documento = %s",
